@@ -32,5 +32,9 @@ public class CompanyController {
         return companyService.updateCompany(id, request);
     }
 
+    @GetMapping("/last-number")
+    public String getLastCompanyNumber() {
+        return companyService.findLastCompanyNumber();
+    }
 
 }
