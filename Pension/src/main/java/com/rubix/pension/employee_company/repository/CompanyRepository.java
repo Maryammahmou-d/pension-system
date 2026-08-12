@@ -20,4 +20,15 @@ public interface CompanyRepository extends JpaRepository<Company, Integer> {
             """,
             nativeQuery = true)
     List<Company> findLatestCompanies();
+
+
+    @Query(value = """
+        SELECT "Company_Number"
+        FROM "Companies"
+        WHERE "Company_Number" IS NOT NULL
+        ORDER BY CAST(SUBSTRING("Company_Number" FROM 2) AS INTEGER) DESC
+        LIMIT 1
+        """,
+            nativeQuery = true)
+    String findLastCompanyNumber();
 }

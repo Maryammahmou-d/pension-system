@@ -18,14 +18,16 @@ public class CompanyService{
         this.companyRepository=companyRepository;
     }
 
+    public Company addNewCompany(CreateCompanyRequest request) {
 
-    public Company addNewCompany(CreateCompanyRequest request){
+        Company company = new Company();
 
-        Company company=new Company();
+        String newCompanyNumber = findLastCompanyNumber();
+
+        company.setCompanyNumber(newCompanyNumber);
 
         company.setModifiedDate(OffsetDateTime.now());
 
-        company.setCompanyNumber(request.getCompanyNumber());
         company.setKafsCompanyNumber(request.getKafsCompanyNumber());
         company.setCompanyName(request.getCompanyName());
         company.setIssueDate(request.getIssueDate());
@@ -50,7 +52,8 @@ public class CompanyService{
         company.setContributionChargesVee(
                 request.getContributionChargesVee());
 
-        company.setImc(request.getImc());
+        company.setImc(
+                request.getImc());
 
         company.setWithdrawalChargesEe(
                 request.getWithdrawalChargesEe());
@@ -64,8 +67,11 @@ public class CompanyService{
         company.setEmployeeSurrenderCharge(
                 request.getEmployeeSurrenderCharge());
 
-        company.setTopUpCharges(request.getTopUpCharges());
-        company.setAdminCharges(request.getAdminCharges());
+        company.setTopUpCharges(
+                request.getTopUpCharges());
+
+        company.setAdminCharges(
+                request.getAdminCharges());
 
         company.setPortfolioSwitchingCharges(
                 request.getPortfolioSwitchingCharges());
@@ -73,11 +79,14 @@ public class CompanyService{
         company.setAllocationRedirectionCharges(
                 request.getAllocationRedirectionCharges());
 
-        company.setTerminationDate(request.getTerminationDate());
+        company.setTerminationDate(
+                request.getTerminationDate());
 
-        company.setNewOrAcquired(request.getNewOrAcquired());
+        company.setNewOrAcquired(
+                request.getNewOrAcquired());
 
-        company.setVestingOnHire(request.getVestingOnHire());
+        company.setVestingOnHire(
+                request.getVestingOnHire());
 
         company.setMaxWithdrawalPercentage(
                 request.getMaxWithdrawalPercentage());
@@ -335,6 +344,23 @@ public class CompanyService{
 
         // This will create a NEW row.
         return companyRepository.save(newCompany);
+    }
+
+    public String findLastCompanyNumber(){
+        String lastCompanyNumber = companyRepository.findLastCompanyNumber();
+
+        int nextNumber;
+
+        if (lastCompanyNumber == null) {
+            nextNumber = 1;
+        } else {
+            String numberPart = lastCompanyNumber.substring(1);
+            nextNumber = Integer.parseInt(numberPart) + 1;
+        }
+
+        String newCompanyNumber = String.format("C%06d", nextNumber);
+
+        return newCompanyNumber;
     }
 
 
