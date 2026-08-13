@@ -27,6 +27,7 @@ public class CompanyService{
         company.setCompanyNumber(newCompanyNumber);
 
         company.setModifiedDate(OffsetDateTime.now());
+        company.setSerial(1);
 
         company.setKafsCompanyNumber(request.getKafsCompanyNumber());
         company.setCompanyName(request.getCompanyName());
@@ -125,6 +126,7 @@ public class CompanyService{
         newCompany.setContactPerson(oldCompany.getContactPerson());
         newCompany.setMobileNumber(oldCompany.getMobileNumber());
         newCompany.setEmail(oldCompany.getEmail());
+        newCompany.setSerial(oldCompany.getSerial() == null ? 1 : oldCompany.getSerial()+1);
 
         newCompany.setStartingNumberOfEmployees(
                 oldCompany.getStartingNumberOfEmployees());
