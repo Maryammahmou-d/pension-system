@@ -51,6 +51,8 @@ public class EmployeeService {
         Employee employee = new Employee();
 
 
+        employee.setSerial(1);
+
         employee.setCompanyNumber(companyNumber);
 
         employee.setEmployeeId(newEmployeeId);
@@ -227,7 +229,7 @@ public class EmployeeService {
         newEmployee.setEmployeeId(oldEmployee.getEmployeeId());
         newEmployee.setEmployeeNumber(oldEmployee.getEmployeeNumber());
         newEmployee.setKafJoiningDate(oldEmployee.getKafJoiningDate());
-
+        newEmployee.setSerial(oldEmployee.getSerial()==null ? 1 : oldEmployee.getSerial()+1);
 
         if (request.getNationalId() != null &&
                 !request.getNationalId().trim().isEmpty()) {

@@ -17,7 +17,7 @@ public interface CompanyRepository extends JpaRepository<Company, Integer> {
             FROM "Companies"
             WHERE "Company_Number" IS NOT NULL
             ORDER BY "Company_Number",
-                     "Modified_Date" DESC NULLS LAST,
+                     "Serial" DESC NULLS LAST,
                      "ID" DESC
             """,
             nativeQuery = true)
@@ -38,7 +38,7 @@ public interface CompanyRepository extends JpaRepository<Company, Integer> {
         SELECT *
         FROM "Companies"
         WHERE "Company_Number" = :companyNumber
-        ORDER BY "Modified_Date" DESC NULLS LAST,
+        ORDER BY "Serial" DESC NULLS LAST,
                  "ID" DESC
         LIMIT 1
         """,

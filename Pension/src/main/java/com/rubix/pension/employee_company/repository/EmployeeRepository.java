@@ -21,7 +21,7 @@ public interface EmployeeRepository extends JpaRepository<Employee,Integer> {
         FROM "Employees"
         WHERE "Company_Number" = :companyNumber
         ORDER BY "Employee_ID",
-                 "Modified_Date" DESC NULLS LAST,
+                 "Serial" DESC NULLS LAST,
                  "ID" DESC
         """,
             nativeQuery = true)
