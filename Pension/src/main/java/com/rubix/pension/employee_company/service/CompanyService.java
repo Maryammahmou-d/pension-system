@@ -126,7 +126,7 @@ public class CompanyService{
         newCompany.setContactPerson(oldCompany.getContactPerson());
         newCompany.setMobileNumber(oldCompany.getMobileNumber());
         newCompany.setEmail(oldCompany.getEmail());
-        newCompany.setSerial(oldCompany.getSerial() == null ? 1 : oldCompany.getSerial());
+        newCompany.setSerial(oldCompany.getSerial() == null ? 1 : oldCompany.getSerial()+1);
 
         newCompany.setStartingNumberOfEmployees(
                 oldCompany.getStartingNumberOfEmployees());
