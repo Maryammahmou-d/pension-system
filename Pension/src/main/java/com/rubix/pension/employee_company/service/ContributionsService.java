@@ -1,6 +1,7 @@
 package com.rubix.pension.employee_company.service;
 
 import com.rubix.pension.employee_company.dto.CreateContributionRequest;
+
 import com.rubix.pension.employee_company.entity.Company;
 import com.rubix.pension.employee_company.entity.Contribution;
 import com.rubix.pension.employee_company.exception.CompanyNotFound;
@@ -27,8 +28,7 @@ public class ContributionsService {
     }
 
 
-    public Contribution addNewContribution(
-            CreateContributionRequest request) {
+    public Contribution addNewContribution(CreateContributionRequest request) {
 
         Company company = companyRepository
                 .findLatestByCompanyNumber(request.getCompanyNumber())
@@ -72,16 +72,13 @@ public class ContributionsService {
     }
 
 
-    public List<Contribution> getContributions(
-            String companyNumber) {
-
+    public List<Contribution> getContributions(String companyNumber) {
         return contributionRepository
                 .findByCompanyNumber(companyNumber);
     }
 
 
-    public Contribution updateContribution(
-            CreateContributionRequest request) {
+    public Contribution updateContribution(CreateContributionRequest request) {
 
         Contribution contribution =
                 contributionRepository

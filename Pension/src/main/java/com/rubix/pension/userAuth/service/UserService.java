@@ -1,5 +1,4 @@
 package com.rubix.pension.userAuth.service;
-
 import com.rubix.pension.userAuth.dto.UpdateUser;
 import com.rubix.pension.userAuth.dto.FirstLoginPasswordRequest;
 import com.rubix.pension.userAuth.entity.User;
@@ -12,11 +11,15 @@ import java.util.List;
 
 @Service
 public class UserService {
+
     private final UserRepository userRepository;
 
     public UserService(UserRepository repository) {
+
         this.userRepository = repository;
     }
+
+
 
     public User createUser(User newUser) {
         if (newUser.getUserLogin() == null || newUser.getUserLogin().trim().isEmpty()) {
@@ -25,6 +28,7 @@ public class UserService {
         if (userRepository.existsByUserLogin(newUser.getUserLogin())) {
             throw new IllegalArgumentException("User Login can not be duplicated");
         }
+
         return userRepository.save(newUser);
     }
 
