@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface EmployeeRepository extends JpaRepository<Employee,Integer> {
     @Query("""
@@ -27,4 +28,19 @@ public interface EmployeeRepository extends JpaRepository<Employee,Integer> {
             nativeQuery = true)
     List<Employee> findLatestEmployeesByCompanyNumber(
             @Param("companyNumber") String companyNumber);
+
+    @Query(value = """
+            SELECT DISTINCT ON ("Employee_Number") *
+            FROM "Employees"
+            WHERE "Company_Number" = :companyNumber
+              AND "Employee_Number" = :employeeNumber
+            ORDER BY "Employee_Number",
+                     "Serial" DESC NULLS LAST,
+                     "ID" DESC
+            LIMIT 1
+            """,
+            nativeQuery = true)
+    Optional<Employee> findLatestByCompanyAndEmployeeNumber(
+            @Param("companyNumber") String companyNumber,
+            @Param("employeeNumber") String employeeNumber);
 }

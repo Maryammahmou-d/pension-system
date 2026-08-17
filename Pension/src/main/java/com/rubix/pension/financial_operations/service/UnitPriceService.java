@@ -11,12 +11,16 @@ import com.rubix.pension.userAuth.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class UnitPriceService {
+
+    private static final ZoneId PRICE_ZONE = ZoneId.of("Asia/Kuwait");
 
     private final UnitPriceRepository unitPriceRepository;
     private final UserRepository userRepository;
@@ -28,7 +32,7 @@ public class UnitPriceService {
 
     public List<UnitPrice> addUnitPrice(Integer userId,CreateUnitPriceRequest request){
         validateRequet(request);
-        OffsetDateTime priceDate=request.getPriceDate();
+        OffsetDateTime priceDate = toCalendarPriceDate(request.getPriceDate());
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() ->
@@ -88,17 +92,14 @@ public class UnitPriceService {
         return unitPrice;
     }
 
-    private boolean priceExists(OffsetDateTime priceDate){
-        OffsetDateTime start =
-                priceDate
-                        .toLocalDate()
-                        .atStartOfDay(
-                                priceDate.getOffset()
-                        ).toOffsetDateTime();
+    private boolean priceExists(OffsetDateTime priceDate) {
+        return unitPriceRepository.countByCalendarDate(priceDate.toLocalDate()) > 0;
+    }
 
-        OffsetDateTime end = start.plusDays(1);
-
-        return unitPriceRepository.countByPriceDate(start,end)>0;
+    /** Persist PriceDate at Asia/Kuwait midnight so Access date equality finds the row. */
+    private OffsetDateTime toCalendarPriceDate(OffsetDateTime priceDate) {
+        LocalDate day = priceDate.toLocalDate();
+        return day.atStartOfDay(PRICE_ZONE).toOffsetDateTime();
     }
 
 
