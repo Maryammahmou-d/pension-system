@@ -17,9 +17,13 @@ public class UnitPriceController {
         this.unitPriceService=unitPriceService;
     }
 
+    @GetMapping
+    public List<UnitPrice> getAllUnitPrices() {
+        return unitPriceService.getAllUnitPrices();
+    }
+
     @PostMapping("/{userId}")
     public List<UnitPrice> addUnitPrice(@PathVariable Integer userId, @RequestBody CreateUnitPriceRequest request){
-
         return unitPriceService.addUnitPrice(userId,request);
     }
 }

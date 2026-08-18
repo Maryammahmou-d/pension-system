@@ -7,10 +7,13 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface UnitPriceRepository extends JpaRepository<UnitPrice,Integer> {
+
+    List<UnitPrice> findAllByOrderByPriceDateDesc();
     @Query("""
         SELECT COUNT(u)
         FROM UnitPrice u

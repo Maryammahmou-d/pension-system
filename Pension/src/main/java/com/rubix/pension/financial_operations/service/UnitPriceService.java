@@ -17,6 +17,8 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
+
+
 @Service
 public class UnitPriceService {
 
@@ -28,6 +30,10 @@ public class UnitPriceService {
     public UnitPriceService(UnitPriceRepository unitPriceRepository, UserRepository userRepository){
         this.unitPriceRepository=unitPriceRepository;
         this.userRepository=userRepository;
+    }
+
+    public List<UnitPrice> getAllUnitPrices() {
+        return unitPriceRepository.findAllByOrderByPriceDateDesc();
     }
 
     public List<UnitPrice> addUnitPrice(Integer userId,CreateUnitPriceRequest request){
