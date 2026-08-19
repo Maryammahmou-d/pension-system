@@ -40,18 +40,14 @@ public interface UnitPriceRepository extends JpaRepository<UnitPrice,Integer> {
     @Query(value = """
         SELECT COUNT(*)
         FROM "UnitPrice"
-        WHERE CAST("PriceDate" AS date) = :priceDate
-           OR ("PriceDate" AT TIME ZONE 'UTC')::date = :priceDate
-           OR ("PriceDate" AT TIME ZONE 'Asia/Kuwait')::date = :priceDate
+        WHERE ("PriceDate" AT TIME ZONE 'Asia/Kuwait')::date = :priceDate
         """, nativeQuery = true)
     long countByCalendarDate(@Param("priceDate") LocalDate priceDate);
 
     @Query(value = """
         SELECT *
         FROM "UnitPrice"
-        WHERE CAST("PriceDate" AS date) = :priceDate
-           OR ("PriceDate" AT TIME ZONE 'UTC')::date = :priceDate
-           OR ("PriceDate" AT TIME ZONE 'Asia/Kuwait')::date = :priceDate
+        WHERE ("PriceDate" AT TIME ZONE 'Asia/Kuwait')::date = :priceDate
         ORDER BY "ID" DESC
         LIMIT 1
         """, nativeQuery = true)

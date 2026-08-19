@@ -45,7 +45,7 @@ public class UnitPriceService {
                         new UserNotFoundException("User Not Found")
                 );
 
-        if(priceExists(priceDate)){
+        if(priceExists(request.getPriceDate())){
             throw new UnitPriceAlreadyUpdatedOnThatDateException("The Unit Price is already updated on that day");
         }
 
@@ -79,7 +79,7 @@ public class UnitPriceService {
         UnitPrice unitPrice=new UnitPrice();
 
 
-        unitPrice.setEntryDate(OffsetDateTime.now());
+        unitPrice.setEntryDate(toCalendarPriceDate(LocalDate.now(PRICE_ZONE)));
         unitPrice.setPriceDate(priceDate);
 
         unitPrice.setFund1(request.getFund1());
@@ -98,13 +98,12 @@ public class UnitPriceService {
         return unitPrice;
     }
 
-    private boolean priceExists(OffsetDateTime priceDate) {
-        return unitPriceRepository.countByCalendarDate(priceDate.toLocalDate()) > 0;
+    private boolean priceExists(LocalDate priceDate) {
+        return unitPriceRepository.countByCalendarDate(priceDate) > 0;
     }
 
     /** Persist PriceDate at Asia/Kuwait midnight so Access date equality finds the row. */
-    private OffsetDateTime toCalendarPriceDate(OffsetDateTime priceDate) {
-        LocalDate day = priceDate.toLocalDate();
+    private OffsetDateTime toCalendarPriceDate(LocalDate day) {
         return day.atStartOfDay(PRICE_ZONE).toOffsetDateTime();
     }
 

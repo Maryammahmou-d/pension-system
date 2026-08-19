@@ -1,10 +1,10 @@
 package com.rubix.pension.financial_operations.dto;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDate;
 
 public class CreateUnitPriceRequest {
 
-    private OffsetDateTime priceDate;
+    private LocalDate priceDate;
 
     private Double fund1;
     private Double fund2;
@@ -18,11 +18,11 @@ public class CreateUnitPriceRequest {
     private Double fund10;
 
 
-    public OffsetDateTime getPriceDate() {
+    public LocalDate getPriceDate() {
         return priceDate;
     }
 
-    public void setPriceDate(OffsetDateTime priceDate) {
+    public void setPriceDate(LocalDate priceDate) {
         this.priceDate = priceDate;
     }
 
