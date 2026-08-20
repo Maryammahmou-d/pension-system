@@ -341,14 +341,21 @@ public class TopUpService {
         addCol(columns, values, "Transactional_Total_Value", "txTotVal");
         params.addValue("txTotVal", txEeTotal + txVeeTotal + txErTotal);
 
-        String sql = "INSERT INTO \"Transactions\" (" + columns + ") VALUES (" + values + ")";
-        jdbcTemplate.update(sql, params);
+        String sql = "INSERT INTO \"Transactions\" (" + columns + ") VALUES (" + values + ") RETURNING \"ID\"";
+        Integer transactionId = jdbcTemplate.queryForObject(sql, params, Integer.class);
+        if (transactionId == null) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create top-up transaction.");
+        }
 
         return new TopUpResult(
                 employee.getEmployeeNumber(),
                 blankTo(employee.getFullName(), employee.getEmployeeNumber()),
                 company.getCompanyNumber(),
                 paymentDate.toString(),
+                accessDateText(modifiedDate),
+                transactionId,
+                serial,
+                employee.getEmployeeId(),
                 employee.getNationalId(),
                 employee.getCategory(),
                 accessDateText(employee.getPensionStartDate()),
@@ -461,6 +468,10 @@ public class TopUpService {
             String employeeName,
             String companyNumber,
             String topUpDate,
+            String modifiedDate,
+            Integer transactionId,
+            Integer serial,
+            Integer employeeId,
             String nationalId,
             String category,
             String pensionStartDate,
