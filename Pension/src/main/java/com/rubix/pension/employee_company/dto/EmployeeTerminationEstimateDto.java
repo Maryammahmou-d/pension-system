@@ -1,4 +1,4 @@
-package com.rubix.pension.financial_operations.dto;
+package com.rubix.pension.employee_company.dto;
 
 import java.util.List;
 

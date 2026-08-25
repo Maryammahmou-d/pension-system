@@ -208,6 +208,12 @@ public class EmployeeService {
                 .findLatestEmployeesByCompanyNumber(companyNumber);
     }
 
+    public List<Employee> getActiveEmployeesByCompanyNumber(String companyNumber) {
+        return employeeRepository.findLatestEmployeesByCompanyNumber(companyNumber).stream()
+                .filter(e -> e.getTerminationDate() == null)
+                .toList();
+    }
+
     public Employee getEmployee(Integer id) {
 
         return employeeRepository.findById(id)

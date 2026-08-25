@@ -18,8 +18,19 @@ public class VestingSupport {
         this.vestingRuleRepository = vestingRuleRepository;
     }
 
+    public VestingRule findRule(String companyNumber) {
+        return vestingRuleRepository.findLatestByCompanyNumber(companyNumber).orElse(null);
+    }
+
     public double vestingFraction(String companyNumber, Employee employee, LocalDate asOf) {
-        VestingRule rule = vestingRuleRepository.findLatestByCompanyNumber(companyNumber).orElse(null);
+        return vestingFraction(findRule(companyNumber), employee, asOf);
+    }
+
+    public double vestingPercent(String companyNumber, Employee employee, LocalDate asOf) {
+        return vestingFraction(companyNumber, employee, asOf) * 100.0;
+    }
+
+    public double vestingFraction(VestingRule rule, Employee employee, LocalDate asOf) {
         if (rule == null) {
             return 0;
         }
@@ -28,8 +39,8 @@ public class VestingSupport {
         return percent == null ? 0 : percent / 100.0;
     }
 
-    public double vestingPercent(String companyNumber, Employee employee, LocalDate asOf) {
-        return vestingFraction(companyNumber, employee, asOf) * 100.0;
+    public double vestingPercent(VestingRule rule, Employee employee, LocalDate asOf) {
+        return vestingFraction(rule, employee, asOf) * 100.0;
     }
 
     public int yearsOfService(Employee employee, LocalDate asOf) {

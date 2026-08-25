@@ -108,6 +108,12 @@ public class CompanyService{
         return companyRepository.findLatestCompanies();
     }
 
+    public List<Company> getActiveLatestCompanies(){
+        return companyRepository.findLatestCompanies().stream()
+                .filter(c -> c.getTerminationDate() == null)
+                .toList();
+    }
+
     public Company updateCompany(Integer id, CreateCompanyRequest requestCompany) {
 
         Company oldCompany = companyRepository.findById(id)
