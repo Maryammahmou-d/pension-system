@@ -27,6 +27,11 @@ public class CompanyController {
         return companyService.getLatestCompanies();
     }
 
+    @GetMapping("/active")
+    public List<Company> getActiveLatestCompanies(){
+        return companyService.getActiveLatestCompanies();
+    }
+
     @PutMapping("/{id}")
     public Company updateCompany(@PathVariable Integer id, @RequestBody CreateCompanyRequest request){
         return companyService.updateCompany(id, request);

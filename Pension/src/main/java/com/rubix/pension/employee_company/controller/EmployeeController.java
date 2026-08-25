@@ -36,6 +36,13 @@ public class EmployeeController {
         return employeeService.getEmployeesByCompanyNumber(companyNumber);
     }
 
+    @GetMapping("/company/{companyNumber}/active")
+    public List<Employee> getActiveEmployeesByCompanyNumber(
+            @PathVariable String companyNumber) {
+
+        return employeeService.getActiveEmployeesByCompanyNumber(companyNumber);
+    }
+
     @GetMapping("/{id}")
     public Employee getEmployee(@PathVariable Integer id) {
         return employeeService.getEmployee(id);

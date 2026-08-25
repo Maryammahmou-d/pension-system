@@ -98,6 +98,10 @@ public class FundHoldingsSupport {
         }
     }
 
+    public boolean hasUnitPrice(LocalDate targetDate) {
+        return unitPriceRepository.countByCalendarDate(targetDate) > 0;
+    }
+
     public UnitPrice requireUnitPrice(LocalDate targetDate) {
         if (unitPriceRepository.countByCalendarDate(targetDate) == 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, UNIT_PRICE_MESSAGE);
