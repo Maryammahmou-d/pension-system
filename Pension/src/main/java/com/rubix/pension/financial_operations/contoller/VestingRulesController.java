@@ -22,8 +22,8 @@ public class VestingRulesController {
     }
 
     @GetMapping("/{companyNumber}")
-    public VestingRuleDto get(@PathVariable String companyNumber) {
-        return vestingRulesService.get(companyNumber);
+    public List<VestingRuleDto> get(@PathVariable String companyNumber) {
+        return vestingRulesService.listByCompany(companyNumber);
     }
 
     @PostMapping

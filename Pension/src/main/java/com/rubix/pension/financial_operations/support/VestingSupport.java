@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
-import java.time.temporal.ChronoUnit;
 
 @Component
 public class VestingSupport {
@@ -43,13 +42,16 @@ public class VestingSupport {
         return vestingFraction(rule, employee, asOf) * 100.0;
     }
 
+    /**
+     * Access Vesting Rules: DateDiff("yyyy", start, asOf) = calendar year delta
+     * (not completed years / AGE).
+     */
     public int yearsOfService(Employee employee, LocalDate asOf) {
         LocalDate start = firstDate(employee.getPensionStartDate(), employee.getKafJoiningDate(), employee.getHireDate());
-        if (start == null) {
+        if (start == null || asOf == null) {
             return 0;
         }
-        long years = ChronoUnit.YEARS.between(start, asOf);
-        return (int) Math.max(years, 0);
+        return Math.max(asOf.getYear() - start.getYear(), 0);
     }
 
     private LocalDate firstDate(OffsetDateTime... values) {

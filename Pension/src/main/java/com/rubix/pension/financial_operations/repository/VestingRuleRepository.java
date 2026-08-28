@@ -24,6 +24,15 @@ public interface VestingRuleRepository extends JpaRepository<VestingRule, Intege
             FROM "Vesting"
             WHERE "Company_Number" = :companyNumber
             ORDER BY "ID" DESC
+            """,
+            nativeQuery = true)
+    List<VestingRule> findAllByCompanyNumber(@Param("companyNumber") String companyNumber);
+
+    @Query(value = """
+            SELECT *
+            FROM "Vesting"
+            WHERE "Company_Number" = :companyNumber
+            ORDER BY "ID" DESC
             LIMIT 1
             """,
             nativeQuery = true)
