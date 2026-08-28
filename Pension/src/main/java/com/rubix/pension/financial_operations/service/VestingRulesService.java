@@ -25,12 +25,18 @@ public class VestingRulesService {
     }
 
     public VestingRuleDto get(String companyNumber) {
+        List<VestingRuleDto> all = listByCompany(companyNumber);
+        return all.isEmpty() ? null : all.get(0);
+    }
+
+    /** Access-style: all vesting history rows for the company (newest first). */
+    public List<VestingRuleDto> listByCompany(String companyNumber) {
         if (companyNumber == null || companyNumber.isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, FundHoldingsSupport.REQUIRED_FIELDS_MESSAGE);
         }
-        return vestingRuleRepository.findLatestByCompanyNumber(companyNumber.trim())
+        return vestingRuleRepository.findAllByCompanyNumber(companyNumber.trim()).stream()
                 .map(this::toDto)
-                .orElse(null);
+                .toList();
     }
 
     public VestingRuleDto create(VestingRuleDto request) {
