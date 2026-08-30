@@ -23,11 +23,8 @@ import java.util.Map;
 public class MonthlyChargesService {
 
     private static final String PREVIOUS_SQL = """
-            SELECT CAST("Payment_Date" AS date) AS payment_date, COUNT(*) AS processed_count
-            FROM "Transactions"
-            WHERE "Description" = 'Monthly Charges'
-            GROUP BY CAST("Payment_Date" AS date)
-            ORDER BY CAST("Payment_Date" AS date) DESC
+            SELECT "Payment_Date" AS payment_date
+            FROM "MonthlyChargesDates"
             """;
 
     private static final String DUPLICATE_SQL = """
@@ -99,7 +96,7 @@ public class MonthlyChargesService {
             run.setRunDate(date.toString());
             run.setMonth(date.getMonthValue());
             run.setYear(date.getYear());
-            run.setProcessedCount(((Number) row.get("processed_count")).intValue());
+            run.setProcessedCount(0);
             runs.add(run);
         }
         return runs;
