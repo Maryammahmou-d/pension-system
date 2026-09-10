@@ -1,13 +1,18 @@
 package com.rubix.pension.employee_company.service;
 
+import com.rubix.pension.AML.Response.AmlCheckResponse;
+import com.rubix.pension.AML.Service.AmlClient;
 import com.rubix.pension.employee_company.dto.CreateEmployeeRequest;
+import com.rubix.pension.employee_company.dto.CreateEmployeeResponse;
 import com.rubix.pension.employee_company.dto.EmployeeNumberResponse;
-import com.rubix.pension.employee_company.entity.Employee;
-import com.rubix.pension.employee_company.exception.EmployeeNotFound;
-import com.rubix.pension.employee_company.repository.EmployeeRepository;
 import com.rubix.pension.employee_company.entity.Company;
-import com.rubix.pension.employee_company.repository.CompanyRepository;
+import com.rubix.pension.employee_company.entity.Employee;
 import com.rubix.pension.employee_company.exception.CompanyNotFound;
+import com.rubix.pension.employee_company.exception.EmployeeNotFound;
+import com.rubix.pension.employee_company.repository.CompanyRepository;
+import com.rubix.pension.employee_company.repository.EmployeeRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
@@ -16,19 +21,24 @@ import java.util.List;
 @Service
 public class EmployeeService {
 
+    private static final Logger log = LoggerFactory.getLogger(EmployeeService.class);
+
     private final EmployeeRepository employeeRepository;
     private final CompanyRepository companyRepository;
+    private final AmlClient amlClient;
 
     public EmployeeService(
             EmployeeRepository employeeRepository,
-            CompanyRepository companyRepository) {
+            CompanyRepository companyRepository,
+            AmlClient amlClient) {
 
         this.employeeRepository = employeeRepository;
         this.companyRepository = companyRepository;
+        this.amlClient = amlClient;
     }
 
 
-    public Employee addNewEmployee(CreateEmployeeRequest request) {
+    public CreateEmployeeResponse addNewEmployee(CreateEmployeeRequest request) {
 
         Company company = companyRepository
                 .findById(request.getCompanyId())
@@ -180,7 +190,47 @@ public class EmployeeService {
                 OffsetDateTime.now()
         );
 
-        return employeeRepository.save(employee);
+        AmlCheckResponse amlResult = screenForAml(request.getFullName(), request.getNationalId());
+
+        Employee saved = employeeRepository.save(employee);
+
+        CreateEmployeeResponse response = new CreateEmployeeResponse();
+        response.setEmployee(saved);
+        response.setAmlResult(amlResult);
+        return response;
+    }
+
+    private AmlCheckResponse screenForAml(String fullName, String nationalId) {
+        if (fullName == null || fullName.isBlank() || nationalId == null || nationalId.isBlank()) {
+            log.warn("Skipping AML screening: fullName or nationalId is missing");
+            AmlCheckResponse skipped = new AmlCheckResponse();
+            skipped.setStatus("SKIPPED");
+            skipped.setTotalMatches(0);
+            return skipped;
+        }
+
+        try {
+            AmlCheckResponse response = amlClient.screenEmployee(fullName, nationalId);
+            if (response == null) {
+                return amlUnavailable("AML screening returned no response");
+            }
+
+            log.info("AML screening completed for employee '{}': status={}, totalMatches={}",
+                    fullName, response.getStatus(), response.getTotalMatches());
+
+            return response;
+        } catch (Exception e) {
+            log.error("AML screening failed for employee '{}': {}", fullName, e.getMessage(), e);
+            return amlUnavailable("AML screening failed: " + e.getMessage());
+        }
+    }
+
+    private AmlCheckResponse amlUnavailable(String message) {
+        AmlCheckResponse response = new AmlCheckResponse();
+        response.setStatus("UNAVAILABLE");
+        response.setTotalMatches(0);
+        response.setMessage(message);
+        return response;
     }
 
     public EmployeeNumberResponse getNextEmployeeNumber(
